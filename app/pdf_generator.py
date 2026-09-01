@@ -90,7 +90,7 @@ def generate_pdf(data: dict, output_path: Path) -> Path:
     c.setStrokeColor(grid); c.setLineWidth(.8); c.rect(left, bottom, right-left, top-bottom)
     title = {"tax_invoice": "TAX INVOICE", "invoice": "INVOICE", "receipt": "RECEIPT",
              "acknowledgement": "ACKNOWLEDGEMENT RECEIPT"}[data["document_type"]]
-    text(W/2, top+3.2*mm, title, 12, True, "center")
+    text(W/2, top+3.2*mm, title, 12.5, True, "center")
 
     header_bottom, split = top-36*mm, left+100*mm
     line(left, header_bottom, right, header_bottom); line(split, top, split, header_bottom)
@@ -98,24 +98,25 @@ def generate_pdf(data: dict, output_path: Path) -> Path:
                 preserveAspectRatio=True, mask="auto", anchor="c")
     para(left+38*mm, header_bottom+3*mm, 60*mm, 29*mm,
          "<b>J AND A REAL ESTATE BROKERAGE LLC</b><br/>105, Al Zarooni Building, 1 Street 1 - Al Barsha 1 - Dubai"
-         "<br/>Emirate: Dubai<br/><b>TRN:</b> 104705182400003<br/><b>E-mail:</b> info@jnahouse.com", 6.3, 7.2)
+         "<br/>Emirate: Dubai<br/><b>TRN:</b> 104705182400003<br/><b>E-mail:</b> info@jnahouse.com"
+         "<br/><b>Phone:</b> +971 54 3232 888", 6.6, 7.25)
 
     mid = split+46*mm
     line(mid, top, mid, header_bottom)
     for yy in (top-12*mm, top-24*mm): line(split, yy, right, yy)
     label = "Invoice No." if data["document_type"] in ("tax_invoice", "invoice") else "Document No."
-    para(split+1.5*mm, top-11*mm, 43*mm, 10*mm, f"{label}<br/><b>{data['document_number']}</b>", 7, 8)
-    para(mid+1.5*mm, top-11*mm, right-mid-3*mm, 10*mm, f"Dated<br/><b>{data['date']}</b>", 7, 8)
-    para(split+1.5*mm, top-23*mm, 43*mm, 10*mm, "Supplier's Ref.", 7, 8)
-    para(mid+1.5*mm, top-23*mm, right-mid-3*mm, 10*mm, "Other Reference(s)", 7, 8)
-    para(split+1.5*mm, header_bottom+1*mm, 43*mm, 10*mm, "Client Order No.", 7, 8)
-    para(mid+1.5*mm, header_bottom+1*mm, right-mid-3*mm, 10*mm, "Dated", 7, 8)
+    para(split+1.5*mm, top-11*mm, 43*mm, 10*mm, f"{label}<br/><b>{data['document_number']}</b>", 7.4, 8.3)
+    para(mid+1.5*mm, top-11*mm, right-mid-3*mm, 10*mm, f"Dated<br/><b>{data['date']}</b>", 7.4, 8.3)
+    para(split+1.5*mm, top-23*mm, 43*mm, 10*mm, "Supplier's Ref.", 7.4, 8.3)
+    para(mid+1.5*mm, top-23*mm, right-mid-3*mm, 10*mm, "Other Reference(s)", 7.4, 8.3)
+    para(split+1.5*mm, header_bottom+1*mm, 43*mm, 10*mm, "Client Order No.", 7.4, 8.3)
+    para(mid+1.5*mm, header_bottom+1*mm, right-mid-3*mm, 10*mm, "Dated", 7.4, 8.3)
 
     client_top, client_bottom = header_bottom, header_bottom-43*mm
     line(left, client_bottom, right, client_bottom); line(split, client_top, split, client_bottom)
     para(left+1.5*mm, client_bottom+2*mm, 96*mm, 38*mm,
-         f"<b>Client Name</b><br/><b>{client_name}</b><br/><br/><b>Address:</b> {address}"
-         f"<br/><b>TRN:</b> {client_trn}<br/><b>Place of Supply:</b> UAE, Dubai", 7.3, 9)
+         f"<b>Client Name</b><br/><font name='JnA-Bold'>{client_name}</font><br/><br/><b>Address:</b> {address}"
+         f"<br/><b>TRN:</b> {client_trn}<br/><b>Place of Supply:</b> UAE, Dubai", 7.8, 9.5)
 
     table_top, table_head, table_bottom = client_bottom, client_bottom-11*mm, bottom+74*mm
     cols = [left, left+9*mm, left+105*mm, left+124*mm, left+142*mm, left+151*mm, left+165*mm, right]
@@ -123,37 +124,38 @@ def generate_pdf(data: dict, output_path: Path) -> Path:
     line(left, table_head, right, table_head); line(left, table_bottom, right, table_bottom)
     for label, a, b in (("Sl<br/>No.",0,1),("Particulars",1,2),("Quantity",2,3),
                         ("Rate",3,4),("per",4,5),("VAT %",5,6),("Amount",6,7)):
-        para(cols[a]+.7*mm, table_head+.7*mm, cols[b]-cols[a]-1.4*mm, 9.5*mm, label, 6.2, 6.8, TA_CENTER)
-    text(left+3*mm, table_head-7*mm, "1")
+        para(cols[a]+.7*mm, table_head+.7*mm, cols[b]-cols[a]-1.4*mm, 9.5*mm, label, 6.6, 7.1, TA_CENTER)
+    text(left+3*mm, table_head-7*mm, "1", 7.4)
     para(cols[1]+2*mm, table_bottom+6*mm, cols[2]-cols[1]-4*mm, table_head-table_bottom-10*mm,
-         f"<b>{data['transaction_type'].upper()}</b><br/><br/><b>Description</b><br/>{description}", 8, 10)
+         f"<font name='JnA-Bold'>{data['transaction_type'].upper()}</font>"
+         f"<br/><br/><b>Description</b><br/>{description}", 8.5, 10.6)
     if note:
         para(cols[1]+2*mm, table_bottom+11*mm, cols[2]-cols[1]-4*mm, 22*mm,
-             f"<b>Note</b><br/>{note}", 8, 10)
-    text((cols[5]+cols[6])/2, table_head-7*mm, f"{int(vat_rate)}%", 6.3, True, "center")
-    text(right-2*mm, table_head-7*mm, f"{base:,.2f}", 6.3, True, "right")
+             f"<font name='JnA-Bold'>Note<br/>{note}</font>", 8.5, 10.6)
+    text((cols[5]+cols[6])/2, table_head-7*mm, f"{int(vat_rate)}%", 6.8, True, "center")
+    text(right-2*mm, table_head-7*mm, f"{base:,.2f}", 6.8, True, "right")
 
     sum_top, sum_bottom, sum_split = table_bottom, table_bottom-27*mm, left+116*mm
     line(left, sum_bottom, right, sum_bottom); line(sum_split, sum_top, sum_split, sum_bottom)
     para(left+1.5*mm, sum_bottom+2*mm, sum_split-left-3*mm, 23*mm,
-         f"Amount Chargeable (in words)<br/><b>{amount_in_words(total)}</b><br/><b>(AED {total:,.2f})</b>", 7, 8.5)
+         f"Amount Chargeable (in words)<br/><b>{amount_in_words(total)}</b><br/><b>(AED {total:,.2f})</b>", 7.5, 9)
     total_label = "Invoice Total" if data["document_type"] in ("tax_invoice", "invoice") else "Receipt Total"
     rows = (("Taxable Value", base), ("Value Added Tax", vat), (total_label, total))
     rh = 8.4*mm
     for i, (label, value) in enumerate(rows):
         y = sum_top-(i+1)*rh
         if i: line(sum_split, y+rh, right, y+rh)
-        text(sum_split+1.5*mm, y+2.4*mm, label, 8 if i == 2 else 7, i == 2)
-        text(right-1.5*mm, y+2.4*mm, f"{value:,.2f}", 9 if i == 2 else 7, i == 2, "right")
+        text(sum_split+1.5*mm, y+2.4*mm, label, 8.4 if i == 2 else 7.4, i == 2)
+        text(right-1.5*mm, y+2.4*mm, f"{value:,.2f}", 9.4 if i == 2 else 7.4, i == 2, "right")
 
     foot_top, foot_mid = sum_bottom, bottom+17*mm
     line(split, foot_top, split, bottom); line(split, foot_mid, right, foot_mid)
     para(split+2*mm, foot_mid+2*mm, right-split-4*mm, foot_top-foot_mid-4*mm,
          "Company's Bank Details<br/><b>A/c Holder's Name:</b> J AND A REAL ESTATE BROKERAGE LLC"
          "<br/><b>Bank Name:</b> Mashreq Bank<br/><b>A/c No.:</b> 19101525837"
-         "<br/><b>IBAN:</b> AE26033000019101525837<br/><b>Branch &amp; SWIFT Code:</b> BOMLAEAD", 6.7, 8.2)
-    text((split+right)/2, foot_mid-6*mm, "for J AND A REAL ESTATE BROKERAGE LLC", 6.8, True, "center")
-    text(right-2*mm, bottom+2*mm, "Authorised Signatory", 6.5, False, "right")
-    text(W/2, bottom-5*mm, "This is a Computer Generated Document", 6.8, False, "center")
+         "<br/><b>IBAN:</b> AE26033000019101525837<br/><b>Branch &amp; SWIFT Code:</b> BOMLAEAD", 7.1, 8.5)
+    text((split+right)/2, foot_mid-6*mm, "for J AND A REAL ESTATE BROKERAGE LLC", 7.2, True, "center")
+    text(right-2*mm, bottom+2*mm, "Authorised Signatory", 6.9, False, "right")
+    text(W/2, bottom-5*mm, "This is a Computer Generated Document", 7.2, False, "center")
     c.save()
     return output_path
