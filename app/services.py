@@ -208,9 +208,12 @@ def create_audit_record(data: dict, pdf_path: Path, drive_file_id: str, drive_li
             sha256=hashlib.sha256(pdf_path.read_bytes()).hexdigest(), created_at=utcnow()))
 
 
-def recent_documents(limit: int = 10) -> list[dict]:
+def recent_documents(limit: int = 10, created_by: int | None = None) -> list[dict]:
     with engine.connect() as conn:
-        rows = conn.execute(select(documents).order_by(documents.c.created_at.desc()).limit(limit)).mappings().all()
+        query = select(documents)
+        if created_by is not None:
+            query = query.where(documents.c.data["created_by"].astext == str(created_by))
+        rows = conn.execute(query.order_by(documents.c.created_at.desc()).limit(limit)).mappings().all()
     return [dict(row["data"], status=row["status"], drive_link=row["drive_link"],
                  created_at=row["created_at"]) for row in rows]
 
