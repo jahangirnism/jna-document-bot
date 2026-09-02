@@ -6,7 +6,8 @@ Creates Tax Invoices, Invoices, Receipts and Acknowledgement Receipts from Teleg
 
 - Telegram bot: `@Jnadoc_bot`
 - Administrator: Telegram ID `1124582593` (`@jahangirdxb`)
-- Access: administrator only
+- Access: administrator plus approved users. Aamir Raheel (Telegram ID `8671901070`) is approved by default.
+- Approved users can create documents and view their own history; only the administrator can view all history, void, or delete.
 - Stamp: not used
 - Numbering uses only three shared series: Sales begins at `JNA_S_0001`; Rent at `JNA_R_0001`; Acknowledgement Receipt at `JNA_ACK_0001`. No `INV` or `REC` numbering series are generated.
 
@@ -23,6 +24,7 @@ Railway detects the root `Dockerfile` and builds it automatically. Add PostgreSQ
 | Variable | Value |
 |---|---|
 | `ADMIN_USER_ID` | `1124582593` |
+| `ALLOWED_USER_IDS` | Comma-separated approved IDs; defaults to `8671901070` |
 | `AUDIT_CHAT_ID` | `1124582593` initially |
 | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` |
 | `GOOGLE_CLIENT_ID` | Google OAuth Web Client ID |
